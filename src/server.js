@@ -7,8 +7,8 @@ const app = express();
 app.set("view engine", "pug");
 app.set("views", `${__dirname}/views`);
 app.use("/static", express.static(`${__dirname}/static`));
-app.get("/", (req, res) => res.render("home"));
-app.get("/*", (req, res) => res.redirect("/"));
+app.get("/", (_, res) => res.render("home"));
+app.get("/*", (_, res) => res.redirect("/"));
 
 const handleListen = () => console.log(`Listening on http://localhost:3000`);
 
@@ -17,5 +17,10 @@ const server = http.createServer(app);
 // http 서버 위에 wss 서버가 돌아간다.
 // http 서버를 돌리는 이유는 GET 요청 같은걸 처리하기 위해서
 const wss = new WebSocket.Server({ server });
+
+function handleConnection(socket) {
+  console.log(socket);
+}
+wss.on("connection", handleConnection);
 
 server.listen(3000, handleListen);
