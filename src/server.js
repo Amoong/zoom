@@ -18,11 +18,15 @@ const server = http.createServer(app);
 // http 서버를 돌리는 이유는 GET 요청 같은걸 처리하기 위해서
 const wss = new WebSocket.Server({ server });
 
+const sockets = [];
+
 wss.on("connection", (socket) => {
+  sockets.push(socket);
   console.log("Connected to Browser ✅");
   socket.on("close", () => console.log("Disconnected from the Browser ❌"));
-  socket.on("message", (message) => console.log(message.toString()));
-  socket.send("hello");
+  socket.on("message", (message) =>
+    sockets.forEach((socket) => socket.send(message.toString()))
+  );
 });
 
 server.listen(3000, handleListen);
